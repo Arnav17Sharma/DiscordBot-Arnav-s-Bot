@@ -197,16 +197,22 @@ def get_meme():
 	}
 
 	headers = {'User-Agent' : 'MyAPI/0.0.1'}
-
+	import random
 	access_token = requests.post('https://www.reddit.com/api/v1/access_token', auth=auth, data=data, headers=headers).json()['access_token']
 	headers = {**headers, **{'Authorization': f'bearer {access_token}'}}
-	sub = "dankmemes"
+	sub = random.choice(["indiandankvideos"]) # JEEMemes
 	response = requests.get(f'https://oauth.reddit.com/r/{sub}/random', headers=headers).json()
 
-	print(response[0]['data']['children'][0]['data']['title'])
-	print(response[0]['data']['children'][0]['data']['url_overridden_by_dest'])
-	
-	return ([response[0]['data']['children'][0]['data']['title'], response[0]['data']['children'][0]['data']['url_overridden_by_dest']])
+	# print(response)
+	print(response[0]['data']['children'][0]['data']['is_video'])
+	# lst = "/".join(lst.split("?")[:-1])+"/audio"
+	print(response[0]['data']['children'][0])
+	link = f"https://www.reddit.com"+response[0]['data']['children'][0]['data']['permalink']
+	if not response[0]['data']['children'][0]['data']['is_video']:
+		get_meme()
+	id = response[0]['data']['children'][0]['data']['id']
+	lst = response[0]['data']['children'][0]['data']['media']['reddit_video']['fallback_url']
+	return ([response[0]['data']['children'][0]['data']['title'], link, lst, id])
 
 def watch_tmkoc():
 	import requests

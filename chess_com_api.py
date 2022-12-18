@@ -54,15 +54,20 @@ def chess_info(username):
   return data
 
 
-def puzzle():
+def puzzle(id, rating):
 	from PIL import Image
 	from random import randint
 	import pandas as pd
+	if rating <= 999:name = "puzzles_1.csv"
+	elif rating > 999 and rating<2000:name = "puzzles_2.csv"
+	elif rating >=2000 and rating<=2900:name = "puzzles_3.csv"
+	else:name = "puzzles_3.csv"
 
-	df = pd.read_csv('./puzzles.csv', nrows=randint(1, 999), dtype=str)
+	df = pd.read_csv(f'./{name}', nrows=randint(1, 139054), dtype=str)
 
 	j = df.to_string().split("\n")[-1]
 	puzzle = j.split()
+	print(puzzle)
 
 	moves = []
 	for k in puzzle[8:]:
@@ -71,11 +76,15 @@ def puzzle():
 		else:
 			moves.append(k)
 			break
+	print(moves)
 	im = Image.open('board.jpg')
 	new_im = im.copy()
 	FEN = puzzle[2]
 	l = FEN.split("/")
 	l[-1] = l[-1].split()[0]
+	if " ".join(puzzle[2:8]).split()[-5]=="w":
+		l = l[::-1]
+		im = im.rotate(180, expand=True)
 	# print(l)
 	for j in range(len(l)):
 		a = -1 
@@ -91,6 +100,9 @@ def puzzle():
 				new_im.paste(piece, (20 + 66 * (a), 25 + 66 * (j)), piece)
 
 	new_im.save('new_board0.jpg', quality=95)
+	# if " ".join(puzzle[2:8]).split()[-5]=="w":
+	# 	new_im = new_im.rotate(180, expand=True)
+	# 	new_im.save('new_board0.jpg', quality=95)
 	# print(puzzle)
 
 	FEN = " ".join(puzzle[2:8])
@@ -107,6 +119,9 @@ def puzzle():
 			FEN = board.fen()
 			l = FEN.split("/")
 			l[-1] = l[-1].split()[0]
+			if " ".join(puzzle[2:8]).split()[-5]=="w":
+				l = l[::-1]
+				new_im = im.rotate(180, expand=True)
 			# print(l)
 			for j in range(len(l)):
 				a = -1 
@@ -120,6 +135,9 @@ def puzzle():
 						else:
 							piece = Image.open(f'./pieces/BLACK/{i}.png')
 						new_im.paste(piece, (20 + 66 * (a), 25 + 66 * (j)), piece)
+			print(" ".join(puzzle[2:8]).split()[-5])
+			# if " ".join(puzzle[2:8]).split()[-5]=="w":
+			# 	new_im = new_im.rotate(180, expand=True)
 			new_im.save(f'new_board{move+1}.jpg', quality=95)
 	board(FEN, moves[:-1])
 
@@ -131,6 +149,7 @@ def puzzle():
 	# print(l)
 
 	gif = Image.new("RGBA", im.size)
-	gif.save(f'solution{puzzle[0]}.gif', save_all=True, append_images=l, optimize=True ,duration=1000, loop=0)
-
+	gif.save(f'solution{id}.gif', save_all=True, append_images=l, optimize=True ,duration=1000, loop=0)
 	return [FEN1,moves[-1], puzzle[-1], puzzle[4], moves[:-1], puzzle[0]]
+
+
