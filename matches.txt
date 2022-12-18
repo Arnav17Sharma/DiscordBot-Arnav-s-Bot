@@ -1,0 +1,6 @@
+1,Team 100wpm,Team Komdi Kings
+2,Team Pawn Stars,Team LivCity
+3,Team LivCity,Team 100wpm
+4,Team Pawn Stars,Team Komdi Kings
+5,Team Komdi Kings,Team LivCity
+6,Team Pawn Stars,Team 100wpm
